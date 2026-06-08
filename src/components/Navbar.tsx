@@ -9,6 +9,7 @@ const navItems = [
   { href: "#about", label: "About" },
   { href: "#projects", label: "Projects" },
   { href: "#skills", label: "Skills" },
+  { href:"https://drive.google.com/file/d/1GRPfHpulFemiu9hGWHZ5QiyU0e_nDC7Y/view?usp=sharing", label: "Resume"},
   { href: "#other", label: "Other" },
 ];
 
