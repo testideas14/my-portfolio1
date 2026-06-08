@@ -1,13 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { ChevronDown, Send, Sparkles } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Send, Sparkles, User, Bot, Loader2 } from "lucide-react";
+import { useChat } from "@ai-sdk/react";
 
 const quickActions = ["Work", "About me", "Skills", "Contact"];
 
 export function Hero() {
-  const [chatInput, setChatInput] = useState("");
+  const { messages, sendMessage, status } = useChat();
+  const [input, setInput] = useState("");
+  const isLoading = status === "submitted" || status === "streaming";
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleQuickAction = (action: string) => {
+    sendMessage({ role: 'user', parts: [{ type: 'text', text: `Tell me about your ${action.toLowerCase()}` }] });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    sendMessage({ role: 'user', parts: [{ type: 'text', text: input }] });
+    setInput("");
+  };
 
   return (
     <section
@@ -56,31 +79,88 @@ export function Hero() {
             <span>Ask me anything about Mandeep...</span>
           </div>
 
-          {/* Quick action pills */}
-          <div className="mb-4 flex flex-wrap gap-2">
-            {quickActions.map((action) => (
-              <button
-                key={action}
-                className="rounded-full border border-white/10 px-3.5 py-1.5 text-xs font-medium text-(--muted) transition-all duration-200 hover:border-(--accent) hover:text-(--foreground)"
+          {/* Chat Messages Area */}
+          <AnimatePresence>
+            {messages.length > 0 && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                className="mb-4 max-h-[250px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent flex flex-col gap-3 text-left"
               >
-                {action}
-              </button>
-            ))}
-          </div>
+                {messages.map((m) => (
+                  <div
+                    key={m.id}
+                    className={`flex items-start gap-2 text-sm ${
+                      m.role === "user" ? "flex-row-reverse" : "flex-row"
+                    }`}
+                  >
+                    <div
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
+                        m.role === "user"
+                          ? "bg-(--accent)/20 text-(--accent)"
+                          : "bg-white/10 text-white"
+                      }`}
+                    >
+                      {m.role === "user" ? <User size={12} /> : <Bot size={12} />}
+                    </div>
+                    <div
+                      className={`rounded-2xl px-3 py-2 max-w-[85%] leading-relaxed ${
+                        m.role === "user"
+                          ? "bg-(--accent)/20 text-(--foreground) rounded-tr-none"
+                          : "bg-white/5 text-(--muted) rounded-tl-none border border-white/5 whitespace-pre-wrap"
+                      }`}
+                    >
+                      {m.parts ? m.parts.map((p: any) => p.type === 'text' ? p.text : '').join('') : (m as any).content || (m as any).text || ''}
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex items-start gap-2 text-sm">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
+                      <Bot size={12} />
+                    </div>
+                    <div className="rounded-2xl rounded-tl-none border border-white/5 bg-white/5 px-3 py-2">
+                      <Loader2 size={14} className="animate-spin text-(--muted)" />
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Quick action pills */}
+          {messages.length === 0 && (
+            <div className="mb-4 flex flex-wrap gap-2 justify-center">
+              {quickActions.map((action) => (
+                <button
+                  key={action}
+                  onClick={() => handleQuickAction(action)}
+                  className="rounded-full border border-white/10 px-3.5 py-1.5 text-xs font-medium text-(--muted) transition-all duration-200 hover:border-(--accent) hover:text-(--foreground)"
+                >
+                  {action}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Chat input */}
-          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2.5">
+          <form onSubmit={handleSubmit} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2.5">
             <input
               type="text"
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               placeholder="Ask anything about Mandeep..."
               className="flex-1 bg-transparent text-sm text-(--foreground) placeholder:text-(--muted)/60 outline-none"
             />
-            <button className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent) text-white transition-transform hover:scale-105 active:scale-95">
+            <button 
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent) text-white transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+            >
               <Send size={14} />
             </button>
-          </div>
+          </form>
         </motion.div>
       </div>
 
