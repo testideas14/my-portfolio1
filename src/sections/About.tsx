@@ -37,10 +37,10 @@ const educationTabs = [
 ];
 
 const passions = [
-  { name: "Traveling", emoji: "✈️" },
-  { name: "Cricket", emoji: "🏏" },
-  { name: "Running", emoji: "🏃" },
-  { name: "Gym", emoji: "💪" },
+  { name: "Traveling", image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=500&auto=format&fit=crop" },
+  { name: "Cricket", image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?q=80&w=500&auto=format&fit=crop" },
+  { name: "Running", image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=500&auto=format&fit=crop" },
+  { name: "Gym", image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=500&auto=format&fit=crop" },
 ];
 
 const techTags = [
@@ -170,35 +170,74 @@ export function About() {
           className="card-glow row-span-1 md:row-span-2 rounded-2xl border border-(--card-border) bg-gradient-to-br from-(--card) to-(--card-border)/50 p-5"
         >
           <h3 className="text-sm font-bold">Mindset</h3>
-          <p className="mt-2 text-xs leading-relaxed text-(--muted)">
+          <p className="mt-2 text-xl leading-relaxed text-(--muted)">
             Building more than software. My passions provide the discipline and
             focus I need to grow.
           </p>
 
-          {/* Passion cards stack */}
-          <div className="relative mt-4 h-48 overflow-hidden rounded-xl">
-            {passions.map((passion, i) => (
-              <motion.div
-                key={passion.name}
-                className={`absolute inset-0 flex flex-col items-center justify-center rounded-xl border transition-all duration-500 cursor-pointer ${i === activePassion
-                  ? "border-violet-500/30 bg-violet-500/10 z-10"
-                  : "border-white/5 bg-white/[0.02]"
+          {/* Passion cards stack (3D Carousel) */}
+          <div 
+            className="relative mt-4 h-48 w-full flex items-center justify-center overflow-hidden rounded-xl" 
+            style={{ perspective: "1000px" }}
+          >
+            {passions.map((passion, i) => {
+              const isActive = i === activePassion;
+              const isPrev = i === (activePassion - 1 + passions.length) % passions.length;
+              const isNext = i === (activePassion + 1) % passions.length;
+              
+              let transform = "translateX(0) scale(0.5) rotateY(0deg)";
+              let zIndex = 0;
+              let opacity = 0;
+              let filter = "blur(4px) grayscale(100%)";
+
+              if (isActive) {
+                transform = "translateX(0) scale(0.95) rotateY(0deg)";
+                zIndex = 10;
+                opacity = 1;
+                filter = "blur(0px) grayscale(0%)";
+              } else if (isPrev) {
+                transform = "translateX(-55%) scale(0.75) rotateY(20deg)";
+                zIndex = 5;
+                opacity = 0.5;
+                filter = "blur(1px) grayscale(30%)";
+              } else if (isNext) {
+                transform = "translateX(55%) scale(0.75) rotateY(-20deg)";
+                zIndex = 5;
+                opacity = 0.5;
+                filter = "blur(1px) grayscale(30%)";
+              }
+
+              return (
+                <div
+                  key={passion.name}
+                  className={`absolute w-[45%] md:w-[45%] aspect-[3/4] rounded-xl overflow-hidden cursor-pointer transition-all duration-500 ease-out border ${
+                    isActive ? "border-violet-500/50 shadow-[0_0_20px_rgba(139,92,246,0.3)]" : "border-white/10"
                   }`}
-                style={{
-                  transform: `translateY(${(i - activePassion) * 8}px) scale(${i === activePassion ? 1 : 0.95})`,
-                  opacity: i === activePassion ? 1 : 0.4,
-                  zIndex: i === activePassion ? 10 : 5 - Math.abs(i - activePassion),
-                }}
-                onClick={() => setActivePassion(i)}
-                onMouseEnter={() => setActivePassion(i)}
-              >
-                <span className="text-4xl">{passion.emoji}</span>
-                <p className="mt-2 text-sm font-semibold">{passion.name}</p>
-              </motion.div>
-            ))}
+                  style={{
+                    transform,
+                    zIndex,
+                    opacity,
+                    filter,
+                    pointerEvents: isActive || isPrev || isNext ? "auto" : "none",
+                  }}
+                  onClick={() => setActivePassion(i)}
+                >
+                  <img
+                    src={passion.image}
+                    alt={passion.name}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3 pt-8">
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white drop-shadow-md">
+                      {passion.name}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <p className="mt-4 text-[11px] italic text-(--muted)">
+          <p className="mt-4 text-[17px] italic text-(--muted)">
             Mastering body and mind is my path to excellence.
           </p>
         </motion.article>
