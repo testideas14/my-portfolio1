@@ -21,12 +21,6 @@ export function Footer() {
             </span>
           </div>
 
-          {/* <div className="flex items-center gap-2 text-base font-medium text-(--muted)">
-            Built with
-            <Heart size={16} className="fill-red-500 text-red-500" />
-            Next.js & Tailwind
-          </div> */}
-
           <div className="flex items-center gap-5">
             {socials.map((social) => (
               <a

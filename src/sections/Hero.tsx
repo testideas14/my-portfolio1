@@ -74,7 +74,7 @@ export function Hero() {
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              placeholder="Ask anything about Paweł..."
+              placeholder="Ask anything about Mandeep..."
               className="flex-1 bg-transparent text-sm text-(--foreground) placeholder:text-(--muted)/60 outline-none"
             />
             <button className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent) text-white transition-transform hover:scale-105 active:scale-95">
