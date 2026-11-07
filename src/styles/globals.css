@@ -1,18 +1,107 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 
+/*
+  Design system for mandeepsingh.dev
+  Page type: software · site-kind: software · kind: tech
+  Dealt (taste-skill): hero "centred", palette "soot-pale-lime", type "chivo", radius soft,
+  buttons pill, ground "deep", one effect (grain-gradient, hand-written in CSS, hero only).
+  Every number below comes from references/layout-v4.md, system.md and motion.md.
+  One grid, one type scale, one button pair, one card recipe, one radius family, one link look.
+*/
+
 :root {
-  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
-  --background: #0a0a0f;
-  --foreground: #e4e4e7;
-  --muted: #a1a1aa;
-  --accent: #8b5cf6;
-  --accent-hover: #a78bfa;
-  --card: #18181b;
-  --card-border: #27272a;
-  --gradient-start: #6366f1;
-  --gradient-end: #ec4899;
+  /* ---- palette: soot-pale-lime ---- */
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --card: #161616;
+  --ink: #ffffff;
+  --muted: #8f8f8f;
+  --ink-soft: #b4b4b4;
+  --accent: #dafa9c;
+  --accent-ink: #0f0f0f;
+  --action: #dafa9c;
+  --action-ink: #0f0f0f;
+  --line: rgb(255 255 255 / 0.1);
+  --line-strong: rgb(255 255 255 / 0.22);
+
+  /* inverse ground, used by the closing band only */
+  --inv-bg: #ffffff;
+  --inv-surface: #ececec;
+  --inv-ink: #0f0f0f;
+  --inv-muted: #5f5f5f;
+
+  /* ---- spacing scale (system.md) ---- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --s-10: 128px;
+
+  /* ---- rhythm tokens ---- */
+  --nav: 72px;
+  --padt: 120px;
+  --padb: 72px;
+  --gut: 80px;
+  --hgap: 48px;
+  --hpadb: 64px;
+  --bar: 0px;
+  --gutter: 24px;
+  --card-gap: 24px;
+  --head-gap: 48px;
+  --container: 1280px;
+
+  /* one screen's content box, and the hero's */
+  --ly-fit: calc(100svh - var(--padt) - var(--padb) - var(--bar));
+  --ly-hero-h: calc(100svh - var(--nav) - var(--hgap) - var(--hpadb) - var(--bar));
+
+  /* ---- type: Chivo + Chivo Mono, --ly-scale 0.96 ---- */
+  --ly-scale: 0.96;
+  --display-weight: 400;
+  --display-tracking: -0.03em;
+  --display-tracking-xl: -0.04em;
+
+  --t-h1: calc(var(--ly-scale) * clamp(40px, 3.048vw + 28.11px, 72px));
+  --t-h2: clamp(30px, 1.714vw + 23.31px, 48px);
+  --t-h3: clamp(24px, 0.381vw + 22.51px, 28px);
+  --t-lead: clamp(17px, 0.286vw + 15.89px, 20px);
+  --t-card: clamp(18px, 0.19vw + 17.26px, 20px);
+  --t-stat: clamp(28px, 0.952vw + 24.29px, 38px);
+  --t-body: 16px;
+  --t-small: 14px;
+  --t-label: 13px;
+
+  /* ---- radius: soft ---- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-btn: 999px;
+  --btn-h: 44px;
+
+  /* ---- motion (motion.md) ---- */
+  --m-in: 120ms;
+  --m-out: 220ms;
+  --m-press: 90ms;
+  --m-ease: cubic-bezier(0.2, 0, 0, 1);
+  --m-lift: -2px;
+}
+
+@media (max-width: 639px) {
+  :root {
+    --nav: 56px;
+    --padt: 96px;
+    --padb: 48px;
+    --gut: 24px;
+    --hgap: 40px;
+    --hpadb: 24px;
+    --gutter: 12px;
+    --card-gap: 12px;
+    --head-gap: 32px;
+  }
 }
 
 *,
@@ -21,17 +110,33 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-padding-top: 0;
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  scroll-behavior: smooth;
-  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* next/font defines --font-chivo and --font-chivo-mono on .app; everything lives inside it */
+body {
+  font-family: var(--font-chivo), system-ui, -apple-system, sans-serif;
+  font-size: var(--t-body);
+  line-height: 1.5;
+}
+
+.mono {
+  font-family: var(--font-chivo-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-variant-ligatures: none;
 }
 
 a {
@@ -39,181 +144,686 @@ a {
   text-decoration: none;
 }
 
-/* Container */
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--t-h1);
+  line-height: 1.02;
+  letter-spacing: var(--display-tracking-xl);
+}
+
+h2 {
+  font-size: var(--t-h2);
+  line-height: 1.08;
+}
+
+h3 {
+  font-size: var(--t-h3);
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.label {
+  font-size: var(--t-label);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* ================================================================ layout
+   One container, one grid, equal left and right edges all the way down. */
+
+.wrap {
+  width: min(100% - 2 * var(--gut), var(--container));
+  margin-inline: auto;
+}
+
+.g12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--card-gap);
+}
+
+.g12 > * {
+  min-width: 0;
+}
+
+/* a child with no span class still takes the row */
+.g12 > :not([class*="col-span"]) {
+  grid-column: 1 / -1;
+}
+
+/* One section per screen: every main > section and footer.closing is exactly 1 or 2 screens. */
 .section {
-  max-width: 80rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-}
-
-@media (min-width: 640px) {
-  .section {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .section {
-    padding-left: 3rem;
-    padding-right: 3rem;
-  }
-}
-
-/* Glass Effects */
-.glass {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-strong {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--card-border);
-  background: rgba(24, 24, 27, 0.8);
-}
-
-/* Gradient Text */
-.gradient-text {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Shimmer Gradient Text */
-@keyframes shimmer-gradient {
-  0% {
-    background-position: 100% 0, 0 0;
-  }
-  100% {
-    background-position: -100% 0, 0 0;
-  }
-}
-
-.text-gradient-shimmer {
-  display: inline-block;
-  background-image: linear-gradient(
-      110deg,
-      transparent 45%,
-      rgba(255, 255, 255, 0.7) 50%,
-      transparent 55%
-    ),
-    linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  background-size: 200% 100%, 100% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer-gradient 3s infinite linear;
-}
-
-/* Scanner animation for location card */
-@keyframes scanner {
-  0%,
-  100% {
-    left: 0%;
-  }
-  50% {
-    left: 100%;
-  }
-}
-
-.scanner-line {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    var(--accent),
-    transparent
-  );
-  box-shadow: 0 0 15px 3px rgba(139, 92, 246, 0.4);
-  animation: scanner 3s ease-in-out infinite;
-  z-index: 10;
-}
-
-/* Marquee / infinite scroll */
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee-track {
+  position: relative;
+  isolation: isolate;
+  height: calc(var(--h, 1) * 100svh);
+  padding-top: var(--padt);
+  padding-bottom: calc(var(--padb) + var(--bar));
   display: flex;
+  flex-direction: column;
+}
+
+.section > .wrap {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 639px) {
+  .section:not(.hero) {
+    height: calc(var(--hm, var(--h, 1)) * 100lvh);
+  }
+}
+
+/* two screens as two groups: row 1 the h2 and the first group, row 2 the rest, no second h2 */
+.g2 > .wrap {
+  display: grid;
+  grid-template-rows: repeat(
+    2,
+    minmax(0, calc(100svh - var(--padt) - var(--padb) - var(--bar)))
+  );
+  align-content: space-between;
+}
+
+/* a card row must be able to shrink to its row: the panel absorbs what is left */
+.g2 .g12 > .card {
+  min-height: 0;
+}
+
+/* a fragment stands on the lit ground with 24px of it on each side, and is cropped by the
+   panel's foot. The ground must show: a fragment edge to edge leaves no ground at all. */
+.panel > .fragment {
+  position: absolute;
+  inset: var(--s-5) var(--s-5) 0 var(--s-5);
+}
+
+@media (max-width: 639px) {
+  .panel > .fragment {
+    inset: var(--s-4) var(--s-4) 0 var(--s-4);
+  }
+}
+
+.section-head {
+  max-width: 760px;
+  margin-bottom: var(--head-gap);
+  display: grid;
+  gap: var(--s-4);
+}
+
+.section-head p {
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  max-width: 58ch;
+  color: var(--ink-soft);
+}
+
+.section-head--row {
+  max-width: none;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+}
+
+.section-head--row > div {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 760px;
+}
+
+.fill {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ================================================================ buttons
+   One pair, the dealt "pill" look. The markup never changes. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  height: var(--btn-h);
+  padding: 0 var(--s-5);
+  border-radius: var(--r-btn);
+  border: 1px solid transparent;
+  font: 500 var(--t-body) / 1 inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--m-out) var(--m-ease),
+    color var(--m-out) var(--m-ease), border-color var(--m-out) var(--m-ease),
+    transform var(--m-press) var(--m-ease);
+}
+
+.btn--primary {
+  background: var(--action);
+  color: var(--action-ink);
+}
+
+.btn--secondary {
+  background: color-mix(in oklab, var(--ink) 8%, var(--bg));
+  color: var(--ink);
+  border-color: transparent;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  align-items: center;
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    transform: translateY(-1px);
+    transition-duration: var(--m-in);
+  }
+  .btn--primary:hover {
+    background: color-mix(in oklab, var(--action) 84%, var(--bg));
+  }
+  .btn--secondary:hover {
+    background: color-mix(in oklab, var(--ink) 14%, var(--bg));
+  }
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+@media (max-width: 639px) {
+  .btn-row {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .btn-row > .btn--secondary {
+    background: none;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--line-strong);
+  }
+}
+
+/* one link look: the underline draws from the left */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
   width: max-content;
-  animation: marquee 20s linear infinite;
+  font-weight: 500;
+  color: var(--ink);
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size var(--m-out) var(--m-ease), color var(--m-out) var(--m-ease);
 }
 
-.marquee-track:hover {
-  animation-play-state: paused;
+.link:hover,
+.link:focus-visible {
+  background-size: 100% 1px;
+  transition-duration: var(--m-in);
 }
 
-/* Scroll indicator bounce */
-@keyframes bounce-down {
-  0%,
-  100% {
-    transform: translateY(0);
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: 32px;
+  padding: 0 var(--s-4);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-size: var(--t-label);
+  color: var(--ink);
+  transition: background-color var(--m-out) var(--m-ease), border-color var(--m-out) var(--m-ease);
+}
+
+a.pill:hover {
+  background: color-mix(in oklab, var(--card) 88%, var(--ink));
+  border-color: var(--line-strong);
+  transition-duration: var(--m-in);
+}
+
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* ================================================================ cards
+   One recipe: 20px radius, 28px padding, a 1px edge, a panel bleeding to the card's foot. */
+
+.card:has(> .panel) {
+  padding-bottom: 0;
+}
+
+.card {
+  --c-pad: 28px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--c-pad);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transition: transform var(--m-out) var(--m-ease), border-color var(--m-out) var(--m-ease);
+}
+
+@media (hover: hover) {
+  a.card:hover,
+  .card--lift:hover {
+    transform: translateY(var(--m-lift));
+    border-color: var(--line-strong);
+    transition-duration: var(--m-in);
   }
-  50% {
-    transform: translateY(6px);
+}
+
+.card h3 {
+  font-family: inherit;
+  font-size: var(--t-card);
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+}
+
+.card p:not([class*="text-"]) {
+  margin-top: var(--s-2);
+  font-size: var(--t-body);
+  line-height: 1.5;
+  color: color-mix(in oklab, var(--ink) 78%, var(--card));
+  max-width: 46ch;
+}
+
+/* The lit panel a fragment sits in. On a dark page the ground behind UI is lit, never
+   dark on dark: the window reads as a real window standing in daylight. */
+.panel {
+  --p-ink: #14160f;
+  --p-muted: #4e5246;
+  --p-line: rgb(20 22 15 / 0.16);
+  position: relative;
+  margin-top: var(--s-6);
+  margin-inline: calc(-1 * var(--c-pad));
+  flex: 1 1 auto;
+  min-height: var(--p-h, 0);
+  overflow: hidden;
+  background-color: #6b7163;
+  background-image: radial-gradient(130% 115% at 50% 0%, #8d947f 0%, #6b7163 45%, #585d50 100%);
+  border-top: 1px solid var(--line);
+}
+
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+}
+
+/* what the panel crops fades into the panel instead of being sliced mid-line */
+.panel--fade::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 3;
+  height: 72px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, #565b4e);
+}
+
+/* a list that closes each row with a hairline */
+.rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rows > li {
+  display: flex;
+  gap: var(--s-5);
+  align-items: baseline;
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-body);
+  line-height: 1.5;
+  transition: background-color var(--m-out) var(--m-ease);
+}
+
+@media (hover: hover) {
+  .rows > li:hover {
+    background: rgb(255 255 255 / 0.035);
+    transition-duration: var(--m-in);
   }
 }
 
-.bounce-down {
-  animation: bounce-down 2s ease-in-out infinite;
+/* ================================================================ the one effect
+   grain-gradient, hand-written: a lit ground under the hero's window, drawn once, never animated. */
+
+.fx-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(90% 120% at 50% 0%, #2e3a21 0%, #1b2015 38%, #121212 72%, #0f0f0f 100%),
+    radial-gradient(40% 60% at 18% 8%, rgb(218 250 156 / 0.16), transparent 70%),
+    radial-gradient(44% 70% at 84% 0%, rgb(218 250 156 / 0.1), transparent 72%);
 }
 
-/* Status dot pulse */
-@keyframes pulse-dot {
-  0%,
-  100% {
+.fx-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.5'/></svg>");
+}
+
+/* the hero's lit frame: the window rises out of it and the last 18% fades into the ground */
+.hero-frame {
+  position: relative;
+  flex: 1 1 0;
+  min-height: clamp(220px, 32svh, 340px);
+  margin-top: var(--s-6);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, #000 82%, transparent);
+}
+
+.hero-frame > .hero__window {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: var(--s-6);
+  width: min(880px, calc(100% - 2 * var(--s-6)));
+  transform: translateX(-50%);
+}
+
+@media (max-width: 639px) {
+  .hero-frame > .hero__window {
+    top: var(--s-4);
+    left: var(--s-4);
+    width: calc(100% - 2 * var(--s-4));
+    transform: none;
+  }
+}
+
+/* ================================================================ the window chrome
+   One window style for the whole page: the hero's assistant and every project fragment. */
+
+.win {
+  border-radius: var(--r-md);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  background: #121212;
+  overflow: hidden;
+  box-shadow: 0 24px 60px -24px rgb(0 0 0 / 0.8);
+}
+
+.win__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  height: 36px;
+  padding-inline: var(--s-4);
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  background: #171717;
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+
+.win__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.win__dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.18);
+}
+
+.win__sp {
+  flex: 1 1 auto;
+}
+
+/* ================================================================ the diagram
+   One input, one router, three lanes. Pulses run along the lines (the page's one moment). */
+
+.dg-line {
+  stroke: rgb(20 22 15 / 0.35);
+  stroke-width: 1;
+  fill: none;
+}
+
+.dg-pulse {
+  stroke: #26301a;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 18 220;
+  animation: dg-run 3.2s linear infinite;
+}
+
+@keyframes dg-run {
+  from {
+    stroke-dashoffset: 238;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.dg-node {
+  fill: #1b1d16;
+  stroke: rgb(20 22 15 / 0.5);
+  stroke-width: 1;
+}
+
+/* ================================================================ the hero window's loop
+   The question stays; the tool line, the answer and the actions arrive 0.9s apart, hold 2.4s. */
+
+.step {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 350ms var(--m-ease), transform 350ms var(--m-ease);
+}
+
+.step.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+/* ================================================================ reduced motion
+   Everything rests; nothing stays hidden. */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .step {
     opacity: 1;
-    transform: scale(1);
+    transform: none;
   }
-  50% {
+  .dg-pulse {
+    animation: none;
+    stroke-dasharray: none;
     opacity: 0.5;
-    transform: scale(1.3);
   }
 }
 
-.pulse-dot {
-  animation: pulse-dot 2s ease-in-out infinite;
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 
-/* Card hover glow */
-.card-glow {
-  transition: all 0.3s ease;
-}
-
-.card-glow:hover {
-  border-color: rgba(139, 92, 246, 0.3);
-  box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.1);
-}
-
-/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--card-border);
-  border-radius: 3px;
+  background: #2a2a2a;
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: #3a3a3a;
+}
+
+/* the hero sits under the fixed header, not on the section rhythm */
+.hero {
+  padding-top: calc(var(--nav) + var(--hgap));
+  padding-bottom: calc(var(--hpadb) + var(--bar));
+}
+
+.hero > .wrap > .hero-text {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.hero__lead {
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.m-arrow {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  overflow: visible;
+}
+
+.m-arrow path:first-child {
+  opacity: 0;
+  transform: translateX(-3px);
+  transition: opacity var(--m-out) var(--m-ease), transform var(--m-out) var(--m-ease);
+}
+
+.m-arrow path:last-child {
+  transition: transform var(--m-out) var(--m-ease);
+}
+
+:is(a, button):hover > .m-arrow path:first-child {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--m-in);
+}
+
+:is(a, button):hover > .m-arrow path:last-child {
+  transform: translateX(3px);
+  transition-duration: var(--m-in);
+}
+
+
+/* a visual that is not inside a card: the stack wall, the tools row */
+.visual {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: radial-gradient(120% 100% at 50% 0%, rgb(255 255 255 / 0.05), transparent 70%),
+    var(--surface);
+}
+
+/* the phone shows the first eighteen marks: a cut tile row reads as a mistake */
+@media (max-width: 639px) {
+  .stack-wall > li:nth-child(n + 16) {
+    display: none;
+  }
+  .stack-wall > li {
+    min-height: 92px;
+  }
+}
+
+
+/* the internship panel gives back height where the split stacks */
+@media (max-width: 1023px) {
+  #experience .card {
+    --p-h: 200px;
+  }
+}
+
+
+
+/* text that stands directly on the lit panel takes a solid chip: a mid ground is the
+   worst case for both dark and light ink, so nothing is set straight onto it */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  max-width: 100%;
+  padding: 6px var(--s-3);
+  border-radius: var(--r-sm);
+  background: #16180f;
+  color: #e8ebe0;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+/* the internship panel gives back more height where the split stacks */
+@media (max-width: 767px) {
+  #experience .card {
+    --p-h: 168px;
+  }
+}
+
+/* the project cards keep their copy whole on a phone */
+@media (max-width: 639px) {
+  #shipped .card {
+    --p-h: 0;
+  }
 }
